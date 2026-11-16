@@ -49,9 +49,11 @@ src/navigation/
                             Checkout, OrderTracking, Wallet
   MainTabs.js               BOTTOM TABS: Home, Print, Cart, Orders, Profile
 src/screens/                one file per screen
-src/components/             AppButton, AppTextField, PlaceholderScreen (temporary)
+src/components/             AppButton, AppTextField, ProductImage, CartButton,
+                            PlaceholderScreen (temporary)
 src/data/campus.json        stores, products, buildings, delivery slots, starting wallet
-src/context/                (phase 2) shared state for cart, wallet and orders
+src/context/CartContext.js  cart shared by all screens, saved in AsyncStorage ('cart')
+                            (wallet and orders: still phase 2)
 src/utils/                  (phase 2+) helpers: opening hours, slots, prices
 ```
 The tabs live **inside** the root stack. Detail screens are pushed over the tab bar, and any tab can open them with `navigation.navigate('Name', params)`.
@@ -60,10 +62,10 @@ The tabs live **inside** the root stack. Detail screens are pushed over the tab 
 | # | Phase | Status |
 |---|---|---|
 | 1 | Setup & navigation: packages, folders, theme, tabs + stack, placeholder screens | ✅ Done |
-| 2 | Context for cart/wallet/orders saved in AsyncStorage. `campus.json` is already in the project. Login already saves accounts. | ⏳ Next |
+| 2 | Context for cart/wallet/orders saved in AsyncStorage. `campus.json` is already in the project. Login already saves accounts. | 🟡 Cart done (`CartContext`); wallet + orders still to do |
 | 3 | Screen 1: Welcome / Login / Sign-up with validation; logging in switches Welcome ↔ app | ✅ Done |
 | 4 | Screen 2: Home: store FlatList, Open/Closed badge, search, category filter, slot + wallet banner | ✅ Done |
-| 5 | Screen 3: Store menu by category, product details (options, quantity), stock, cart badge, one-store rule | |
+| 5 | Screen 3: Store menu by category, product details (options, quantity), stock, cart badge, one-store rule | ✅ Done |
 | 6 | Screen 4: Printing form with live price and validation, added to the Printing Office cart | |
 | 7 | Screen 5: Cart (+/−, fees, minimum) and Checkout (building/room, slot rules, wallet/cash) | |
 | 8 | Screens 6 & 7: tracking timer, cancel, rating; history + filters + reorder; profile; wallet; then final checks and the user guide | |

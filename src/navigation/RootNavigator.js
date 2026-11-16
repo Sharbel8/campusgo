@@ -18,6 +18,7 @@ import { View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { colors } from '../theme/theme';
+import CartButton from '../components/CartButton';
 
 import MainTabs from './MainTabs';
 import WelcomeScreen from '../screens/WelcomeScreen';
@@ -68,9 +69,16 @@ export default function RootNavigator() {
       <Stack.Screen
         name="StoreMenu"
         component={StoreMenuScreen}
-        options={({ route }) => ({ title: route.params.storeName })}
+        options={({ route }) => ({
+          title: route.params.storeName,
+          headerRight: () => <CartButton />, // cart badge (the tab bar is hidden here)
+        })}
       />
-      <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} options={{ title: '' }} />
+      <Stack.Screen
+        name="ProductDetails"
+        component={ProductDetailsScreen}
+        options={{ title: '', headerRight: () => <CartButton /> }}
+      />
       <Stack.Screen name="Checkout" component={CheckoutScreen} />
       <Stack.Screen name="OrderTracking" component={OrderTrackingScreen} options={{ title: 'Track order' }} />
       <Stack.Screen name="Wallet" component={WalletScreen} />
