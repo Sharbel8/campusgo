@@ -1,4 +1,5 @@
 // Screen 7b — Profile (real version in phase 8)
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import PlaceholderScreen from '../components/PlaceholderScreen';
 import AppButton from '../components/AppButton';
 
@@ -16,8 +17,12 @@ export default function ProfileScreen({ navigation }) {
       <AppButton
         title="Sign out"
         variant="ghost"
-        // reset() clears the history so the user can't go "back" into the app
-        onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Welcome' }] })}
+        // Remove the saved login, then go back to the welcome screen.
+        onPress={() => {
+          AsyncStorage.removeItem('session').then(() => {
+            navigation.reset({ index: 0, routes: [{ name: 'Welcome' }] });
+          });
+        }}
       />
     </PlaceholderScreen>
   );

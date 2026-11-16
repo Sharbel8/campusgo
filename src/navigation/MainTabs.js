@@ -33,7 +33,7 @@ export default function MainTabs() {
         tabBarActiveTintColor: colors.accent,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: {
-          backgroundColor: '#0B0B0B',
+          backgroundColor: colors.tabBar,
           borderTopColor: colors.border,
         },
         tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },

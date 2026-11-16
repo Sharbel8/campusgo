@@ -13,6 +13,9 @@
 // React Navigation: detail screens cover the tab bar, and any
 // tab can open any detail screen with navigation.navigate().
 // =============================================================
+import { useState, useEffect } from 'react';
+import { View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { colors } from '../theme/theme';
 
@@ -27,9 +30,27 @@ import WalletScreen from '../screens/WalletScreen';
 const Stack = createNativeStackNavigator();
 
 export default function RootNavigator() {
+  const [ready, setReady] = useState(false);
+  const [hasSession, setHasSession] = useState(false);
+
+  // useEffect runs this once when the app opens (the [] at the end).
+  // If a session was saved on the phone, we skip the login screen.
+  useEffect(() => {
+    AsyncStorage.getItem('session').then((value) => {
+      if (value !== null) {
+        setHasSession(true);
+      }
+      setReady(true);
+    });
+  }, []);
+
+  if (!ready) {
+    return <View style={{ flex: 1, backgroundColor: colors.background }} />;
+  }
+
   return (
     <Stack.Navigator
-      initialRouteName="Welcome"
+      initialRouteName={hasSession ? 'MainTabs' : 'Welcome'}
       screenOptions={{
         // header look shared by every stack screen
         headerStyle: { backgroundColor: colors.background },
