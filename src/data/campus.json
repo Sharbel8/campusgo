@@ -34,8 +34,8 @@
       "name": "UA Copy",
       "category": "Printing",
       "prepMinutes": 20,
-      "opens": "00:00",
-      "closes": "23:59",
+      "opens": "8:00",
+      "closes": "17:00",
       "icon": "print"
     }
   ],
