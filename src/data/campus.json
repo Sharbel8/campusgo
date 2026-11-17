@@ -1,12 +1,13 @@
 {
   "walletBalance": 18.5,
+  "printPrices": { "bwPerPage": 0.05, "colorPerPage": 0.25, "staple": 0.1, "spiral": 1.5, "maxPages": 200 },
   "stores": [
     {
       "id": "cafeteria",
       "name": "UA Caff",
       "category": "Food",
       "prepMinutes": 15,
-      "opens": "07:30",
+      "opens": "7:30",
       "closes": "15:30",
       "icon": "restaurant"
     },
@@ -33,8 +34,8 @@
       "name": "UA Copy",
       "category": "Printing",
       "prepMinutes": 20,
-      "opens": "08:00",
-      "closes": "17:00",
+      "opens": "00:00",
+      "closes": "23:59",
       "icon": "print"
     }
   ],

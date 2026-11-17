@@ -17,6 +17,7 @@ const CATEGORY_ICONS = {
   Stationery: 'pencil',
   Clothes: 'shirt',
   Supplies: 'documents',
+  Printing: 'print', // print jobs from the Print tab
 };
 
 export default function ProductImage({ category, size = 56 }) {
