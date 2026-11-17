@@ -106,15 +106,19 @@ export default function HomeScreen({ navigation }) {
   const stores = matchingStores(campus.stores, category, search);
   const slot = nextSlot(campus.slots);
 
-  // The starting balance is in campus.json. If the wallet screen
-  // has saved a newer one on the phone, show that instead.
+  // The starting balance is in campus.json. Read it again whenever
+  // Home is opened, so a top-up on the wallet screen shows here.
   useEffect(() => {
-    AsyncStorage.getItem('walletBalance').then((value) => {
-      if (value !== null) {
-        setBalance(Number(value));
-      }
-    });
-  }, []);
+    function loadBalance() {
+      AsyncStorage.getItem('walletBalance').then((value) => {
+        if (value !== null) {
+          setBalance(Number(value));
+        }
+      });
+    }
+    loadBalance();
+    return navigation.addListener('focus', loadBalance);
+  }, [navigation]);
 
   function openStore(store) {
     // A closed store is shown, but it cannot take an order.

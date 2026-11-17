@@ -26,6 +26,32 @@ function deliveryFee(subtotal) {
   return RULES.fee;
 }
 
+// Newest transaction first, under the key the wallet screen reads.
+async function addWalletTransaction(entry) {
+  const raw = await AsyncStorage.getItem('transactions');
+  const list = raw ? JSON.parse(raw) : [];
+  list.unshift(entry);
+  await AsyncStorage.setItem('transactions', JSON.stringify(list));
+}
+
+// Skip it when the same building and room are already saved.
+async function rememberLocation(building, room) {
+  const raw = await AsyncStorage.getItem('locations');
+  const list = raw ? JSON.parse(raw) : [];
+  for (let i = 0; i < list.length; i++) {
+    if (list[i].buildingId === building.id && list[i].room === room) {
+      return;
+    }
+  }
+  list.unshift({
+    id: 'L-' + String(Date.now()),
+    buildingId: building.id,
+    buildingName: building.name,
+    room: room,
+  });
+  await AsyncStorage.setItem('locations', JSON.stringify(list));
+}
+
 function findStore(id) {
   for (let i = 0; i < campus.stores.length; i++) {
     if (campus.stores[i].id === id) {
@@ -142,7 +168,18 @@ export default function CheckoutScreen({ navigation }) {
     if (payment === 'wallet') {
       const nextBalance = Math.round((balance - total) * 100) / 100;
       await AsyncStorage.setItem('walletBalance', String(nextBalance));
+      // The wallet screen lists every payment, refund and top-up.
+      await addWalletTransaction({
+        id: 'T-' + order.id,
+        type: 'payment',
+        label: store.name + ' · ' + order.id,
+        amount: -total,
+        createdAt: order.createdAt,
+      });
     }
+
+    // Keep this building and room on the profile for next time.
+    await rememberLocation(building, room.trim());
 
     const saved = await AsyncStorage.getItem('orders');
     const orders = saved ? JSON.parse(saved) : [];
