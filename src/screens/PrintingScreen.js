@@ -12,9 +12,12 @@ import { isStoreOpen } from '../utils/storeHours';
 import AppButton from '../components/AppButton';
 import { colors, spacing, radius, typography } from '../theme/theme';
 
-// The price table comes from campus.json:
-// { bwPerPage: 0.05, colorPerPage: 0.25, staple: 0.1, spiral: 1.5, maxPages: 200 }
+// The price table comes from campus.json.
+// Pages: black & white $0.05, color $0.25. Spiral binding is +$1.50.
+// Delivery is $0.50, and free when the order is above $10.
+// The order itself must be at least $2.
 const PRICES = campus.printPrices;
+const DELIVERY = campus.delivery;
 const PRINT_STORE_ID = 'printing';
 
 // The choices for each option. "value" is what we store in state,
@@ -102,7 +105,7 @@ export default function PrintingScreen({ navigation }) {
   // false until the user presses "Add": then empty fields show errors too
   const [submitted, setSubmitted] = useState(false);
 
-  const { cartStoreId, addItem, clearCart } = useCart();
+  const { cartStoreId, subtotal, addItem, clearCart } = useCart();
   const store = findById(campus.stores, PRINT_STORE_ID);
   const open = isStoreOpen(store);
 
@@ -122,6 +125,15 @@ export default function PrintingScreen({ navigation }) {
   }
   const pricePerCopy = pages * pagePrice + bindingPrice;
   const total = pricePerCopy * copies;
+
+  // Delivery is charged on the whole order, not on each page.
+  // If the cart already holds print jobs, they count toward it.
+  let orderSubtotal = total;
+  if (cartStoreId === PRINT_STORE_ID) {
+    orderSubtotal = subtotal + total;
+  }
+  const deliveryFee = orderSubtotal > DELIVERY.freeAbove ? 0 : DELIVERY.fee;
+  const amountDue = orderSubtotal + deliveryFee;
   // double-sided prints 2 pages per sheet: 5 pages -> 3 sheets
   const sheetsPerCopy = sides === 'double' ? Math.ceil(pages / 2) : pages;
 
@@ -150,6 +162,8 @@ export default function PrintingScreen({ navigation }) {
       ' per order.';
   }
   const formOk = nameError === '' && pagesError === '' && copiesError === '';
+  // The $2 minimum is on the order, so a 1-page job is not enough by itself.
+  const belowMinimum = formOk && orderSubtotal < DELIVERY.minimum;
 
   // Show an error if the user pressed Add, or already typed something wrong.
   const showNameError = submitted && nameError !== '';
@@ -217,7 +231,7 @@ export default function PrintingScreen({ navigation }) {
 
   function onAddPress() {
     setSubmitted(true);
-    if (!formOk || !open) {
+    if (!formOk || !open || belowMinimum) {
       return;
     }
     const item = buildCartItem();
@@ -350,12 +364,29 @@ export default function PrintingScreen({ navigation }) {
           </View>
           <View style={styles.divider} />
           <View style={styles.priceRow}>
-            <Text style={styles.totalLabel}>Total</Text>
-            <Text style={styles.totalValue}>{money(total)}</Text>
+            <Text style={styles.priceLabel}>Print total</Text>
+            <Text style={styles.priceValue}>{money(total)}</Text>
+          </View>
+          <View style={styles.priceRow}>
+            <Text style={styles.priceLabel}>
+              {deliveryFee === 0 ? 'Delivery (free above $10)' : 'Delivery'}
+            </Text>
+            <Text style={styles.priceValue}>{deliveryFee === 0 ? 'Free' : money(deliveryFee)}</Text>
+          </View>
+          <View style={styles.priceRow}>
+            <Text style={styles.totalLabel}>To pay</Text>
+            <Text style={styles.totalValue}>{money(amountDue)}</Text>
           </View>
           <Text style={styles.sheets}>
-            Uses {sheetsPerCopy * copies} sheet{sheetsPerCopy * copies === 1 ? '' : 's'} of paper
+            Uses {sheetsPerCopy * copies} sheet{sheetsPerCopy * copies === 1 ? '' : 's'} of paper.
+            Delivery is {money(DELIVERY.fee)}, free above {money(DELIVERY.freeAbove)}. Minimum order is{' '}
+            {money(DELIVERY.minimum)}.
           </Text>
+          {belowMinimum && (
+            <Text style={styles.error}>
+              Minimum order is {money(DELIVERY.minimum)}. Add more pages or copies.
+            </Text>
+          )}
         </View>
 
         <AppButton

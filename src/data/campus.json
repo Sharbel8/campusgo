@@ -1,6 +1,8 @@
 {
-  "walletBalance": 18.5,
+  "walletBalance": 10.5,
   "printPrices": { "bwPerPage": 0.05, "colorPerPage": 0.25, "staple": 0.1, "spiral": 1.5, "maxPages": 200 },
+  "delivery": { "fee": 0.5, "freeAbove": 10, "minimum": 2 },
+  "slotsAlwaysAvailable": false,
   "stores": [
     {
       "id": "cafeteria",
@@ -50,6 +52,9 @@
     { "id": "a", "name": "Block A" },
     { "id": "b", "name": "Block B" },
     { "id": "c", "name": "Block C" },
+    { "id": "d", "name": "Block D" },
+    { "id": "g", "name": "Block G" },
+    { "id": "h", "name": "Block H" },
     { "id": "labs", "name": "Engineering Labs" },
     { "id": "library", "name": "Library" },
     { "id": "admin", "name": "Administration" }

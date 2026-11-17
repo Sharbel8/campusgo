@@ -67,7 +67,7 @@ The tabs live **inside** the root stack. Detail screens are pushed over the tab 
 | 4 | Screen 2: Home: store FlatList, Open/Closed badge, search, category filter, slot + wallet banner | ✅ Done |
 | 5 | Screen 3: Store menu by category, product details (options, quantity), stock, cart badge, one-store rule | ✅ Done |
 | 6 | Screen 4: Printing form with live price and validation, added to the Printing Office cart | ✅ Done |
-| 7 | Screen 5: Cart (+/−, fees, minimum) and Checkout (building/room, slot rules, wallet/cash) | |
+| 7 | Screen 5: Cart (+/−, fees, minimum) and Checkout (building/room, slot rules, wallet/cash) | ✅ Done |
 | 8 | Screens 6 & 7: tracking timer, cancel, rating; history + filters + reorder; profile; wallet; then final checks and the user guide | |
 
 Screens still marked "Coming in phase X" use `PlaceholderScreen`. Replace them with the real screen in their phase.
