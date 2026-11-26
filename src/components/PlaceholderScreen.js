@@ -1,6 +1,6 @@
 // A temporary screen layout used in Phase 1 so every screen exists
 // and can be navigated to. Each later phase replaces one of these
-// with the real screen. It already uses the PadelLab look:
+// with the real screen. It already uses the UA blue-and-white look:
 // icon tile + uppercase label + big title + glassy card.
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';

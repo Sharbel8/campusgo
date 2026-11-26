@@ -1,6 +1,6 @@
 // A reusable button with three looks:
-//  - "primary":   solid blue (main action)
-//  - "secondary": glassy dark with a thin border (like "Continue with Google")
+//  - "primary":   white, with blue text (the logo's two colors)
+//  - "secondary": glassy, with a thin light border
 //  - "ghost":     text only
 import { Pressable, Text, StyleSheet } from 'react-native';
 import { colors, radius } from '../theme/theme';
@@ -18,7 +18,15 @@ export default function AppButton({ title, onPress, variant = 'primary', disable
         style,
       ]}
     >
-      <Text style={[styles.text, variant === 'ghost' && styles.ghostText]}>{title}</Text>
+      <Text
+        style={[
+          styles.text,
+          variant === 'primary' && styles.primaryText,
+          variant === 'ghost' && styles.ghostText,
+        ]}
+      >
+        {title}
+      </Text>
     </Pressable>
   );
 }
@@ -41,5 +49,6 @@ const styles = StyleSheet.create({
   pressed: { opacity: 0.75 },
   disabled: { opacity: 0.4 },
   text: { color: colors.text, fontSize: 16, fontWeight: '700' },
+  primaryText: { color: colors.onAccent },
   ghostText: { color: colors.accent },
 });

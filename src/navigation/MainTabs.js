@@ -5,6 +5,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme/theme';
+import { useCart } from '../context/CartContext';
 
 import HomeScreen from '../screens/HomeScreen';
 import PrintingScreen from '../screens/PrintingScreen';
@@ -24,6 +25,9 @@ const TAB_ICONS = {
 };
 
 export default function MainTabs() {
+  // number of items in the cart, shown as a badge on the Cart tab
+  const { itemCount } = useCart();
+
   return (
     <Tab.Navigator
       // screenOptions can be a function: it receives the current route,
@@ -33,7 +37,7 @@ export default function MainTabs() {
         tabBarActiveTintColor: colors.accent,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: {
-          backgroundColor: '#0B0B0B',
+          backgroundColor: colors.tabBar,
           borderTopColor: colors.border,
         },
         tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
@@ -45,7 +49,15 @@ export default function MainTabs() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Print" component={PrintingScreen} />
-      <Tab.Screen name="Cart" component={CartScreen} />
+      <Tab.Screen
+        name="Cart"
+        component={CartScreen}
+        options={{
+          // undefined = no badge when the cart is empty
+          tabBarBadge: itemCount > 0 ? itemCount : undefined,
+          tabBarBadgeStyle: { backgroundColor: colors.accent, color: colors.onAccent },
+        }}
+      />
       <Tab.Screen name="Orders" component={OrdersScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>

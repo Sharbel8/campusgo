@@ -22,18 +22,18 @@ A mobile-only app where students and staff order from the on-campus services (Ca
 - Stores show an **Open/Closed** badge computed from their opening hours and the current time. Closed stores can't receive orders.
 - The cart holds products from **one store only**. Adding from another store asks the user to empty the cart first.
 - Out-of-stock products are shown but can't be added.
-- Printing: **B&W $0.05/page, color $0.25/page, spiral binding +$1.50** (plus staple, single/double-sided, copies). The price updates live on every change. Pages and copies must be > 0, with **max 200 pages**.
+- Printing: **B&W $0.05/page, color $0.25/page, spiral binding +$1.50** (plus staple, single/double-sided, copies). The price table is `printPrices` in `campus.json`; staple is $0.10 and binding is paid per copy. A print job is added to the cart as ONE item (`quantity: 1`, `unitPrice` = whole job, options listed in `extras`), so the cart's +/− can't push it past 200 pages. The price updates live on every change. Pages and copies must be > 0, with **max 200 pages**.
 - Delivery fee is **$0.50**, free above **$10**. **Minimum order is $2.**
 - Delivery slots are class breaks (e.g. 9:45–10:00, 11:15–11:30, 12:45–13:30). A slot is disabled if it has already passed or is too close given the store's preparation time.
 - Payment is **Campus Wallet** or **cash on delivery**. Wallet payment is refused if the balance is too low.
 - Tracking: Received → Preparing → On the way → Delivered to Building X, Room Y. The status changes automatically with a **timer in `useEffect` with cleanup**. Cancelling is only allowed while the order is "Received". After delivery the user can rate it (1–5 stars + comment).
 - History filters by store/status and has a **Reorder** button. The profile has saved delivery locations. The wallet has a simulated top-up and a transaction list.
 
-## Design: dark style inspired by padellab.club
-Every color, spacing, radius and text style is in **`src/theme/theme.js`**. Always import from there and never hard-code colors in screens.
-- Near-black background `#080808`, cards `#111111`, raised tiles `#1C1C1C`.
-- Glassy inputs and secondary buttons: `rgba(255,255,255,0.055)` with thin borders `rgba(255,255,255,0.12)`.
-- Accent blue `#1F71F4` for primary buttons, links and the active tab. Deep navy for the logo tile.
+## Design: Université Antonine blue and white
+Every color, spacing, radius and text style is in **`src/theme/theme.js`**. Always import from there and never hard-code colors in screens. The palette matches the UA logo: blue `#2E589E` and white.
+- Page background `#2E589E`, cards `#234880`, raised tiles `#1B3C72`, tab bar `#163566`.
+- Glassy inputs and secondary buttons: `rgba(255,255,255,0.12)` with thin borders `rgba(255,255,255,0.24)`.
+- Primary buttons are white with blue text. The active tab and links are white.
 - Big bold titles with tight negative letter spacing (`typography.hero` / `title`).
 - Small **UPPERCASE, letter-spaced** labels above titles (`typography.eyebrow`), e.g. "STORE MENU".
 - Rounded corners: 14 / 18 / 28, and pills (999).
@@ -49,10 +49,15 @@ src/navigation/
                             Checkout, OrderTracking, Wallet
   MainTabs.js               BOTTOM TABS: Home, Print, Cart, Orders, Profile
 src/screens/                one file per screen
-src/components/             AppButton, PlaceholderScreen (temporary)
-src/data/                   (phase 2) campus.json mock data
-src/context/                (phase 2) shared state (user, cart, wallet, orders) + AsyncStorage
-src/utils/                  (phase 2+) helpers: opening hours, slots, prices, validation
+src/components/             AppButton, AppTextField, ProductImage, CartButton,
+                            PlaceholderScreen (temporary)
+src/data/campus.json        stores, products, buildings, delivery slots, starting wallet
+src/context/CartContext.js  cart shared by all screens, saved in AsyncStorage ('cart')
+                            wallet balance: 'walletBalance'
+                            orders: 'orders'
+                            wallet transactions: 'transactions'
+                            saved delivery locations: 'locations'
+src/utils/storeHours.js     toMinutes, minutesNow, isStoreOpen (shared helpers)
 ```
 The tabs live **inside** the root stack. Detail screens are pushed over the tab bar, and any tab can open them with `navigation.navigate('Name', params)`.
 
@@ -60,13 +65,13 @@ The tabs live **inside** the root stack. Detail screens are pushed over the tab 
 | # | Phase | Status |
 |---|---|---|
 | 1 | Setup & navigation: packages, folders, theme, tabs + stack, placeholder screens | ✅ Done |
-| 2 | Mock data (`campus.json`) + Context for user/cart/wallet/orders saved in AsyncStorage | ⏳ Next |
-| 3 | Screen 1: Welcome / Login / Sign-up with validation; logging in switches Welcome ↔ app | |
-| 4 | Screen 2: Home: store FlatList, Open/Closed badge, search, category filter, slot + wallet banner | |
-| 5 | Screen 3: Store menu by category, product details (options, quantity), stock, cart badge, one-store rule | |
-| 6 | Screen 4: Printing form with live price and validation, added to the Printing Office cart | |
-| 7 | Screen 5: Cart (+/−, fees, minimum) and Checkout (building/room, slot rules, wallet/cash) | |
-| 8 | Screens 6 & 7: tracking timer, cancel, rating; history + filters + reorder; profile; wallet; then final checks and the user guide | |
+| 2 | Context for cart/wallet/orders saved in AsyncStorage. `campus.json` is already in the project. Login already saves accounts. | ✅ Cart in `CartContext`. Wallet, orders, transactions and saved locations are stored from the screens |
+| 3 | Screen 1: Welcome / Login / Sign-up with validation; logging in switches Welcome ↔ app | ✅ Done |
+| 4 | Screen 2: Home: store FlatList, Open/Closed badge, search, category filter, slot + wallet banner | ✅ Done |
+| 5 | Screen 3: Store menu by category, product details (options, quantity), stock, cart badge, one-store rule | ✅ Done |
+| 6 | Screen 4: Printing form with live price and validation, added to the Printing Office cart | ✅ Done |
+| 7 | Screen 5: Cart (+/−, fees, minimum) and Checkout (building/room, slot rules, wallet/cash) | ✅ Done |
+| 8 | Screens 6 & 7: tracking timer, cancel, rating; history + filters + reorder; profile; wallet; then final checks and the user guide | 🟡 Tracking, history, profile and wallet done. User guide still to do |
 
 Screens still marked "Coming in phase X" use `PlaceholderScreen`. Replace them with the real screen in their phase.
 

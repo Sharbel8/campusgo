@@ -1,29 +1,31 @@
 // =============================================================
 // theme.js — the single place where the app's look is defined.
-// Inspired by the PadelLab dark design: near-black background,
-// glassy cards with thin light borders, a bright blue accent,
-// big bold titles and small UPPERCASE letter-spaced labels.
+// Colors come from the Université Antonine logo: blue #2E589E
+// and white. Pages use that blue, cards are a deeper shade of
+// the same blue, and primary buttons are white with blue text.
 // Every screen imports from here, so changing a color here
 // changes it everywhere.
 // =============================================================
 import { DarkTheme } from '@react-navigation/native';
 
 export const colors = {
-  background: '#080808', // page background
-  surface: '#111111', // cards
-  surface2: '#1C1C1C', // raised elements (icon tiles, chips)
-  glass: 'rgba(255,255,255,0.055)', // inputs / secondary buttons
-  glassActive: 'rgba(255,255,255,0.10)', // selected segment / pressed
-  border: 'rgba(255,255,255,0.12)',
-  borderStrong: 'rgba(255,255,255,0.18)',
+  background: '#2E589E', // page background — the logo blue
+  surface: '#234880', // cards
+  surface2: '#1B3C72', // raised elements (icon tiles, chips)
+  tabBar: '#163566', // bottom bar, darkest step of the same blue
+  glass: 'rgba(255,255,255,0.12)', // inputs / secondary buttons
+  glassActive: 'rgba(255,255,255,0.20)', // selected segment / pressed
+  border: 'rgba(255,255,255,0.24)',
+  borderStrong: 'rgba(255,255,255,0.36)',
 
-  text: '#F5F7FB', // main text
-  textMuted: '#888888', // secondary text & labels
-  textFaint: 'rgba(232,237,244,0.5)', // inactive text
+  text: '#FFFFFF', // main text — the logo's white
+  textMuted: 'rgba(255,255,255,0.75)', // secondary text & labels
+  textFaint: 'rgba(255,255,255,0.5)', // inactive text
 
-  accent: '#1F71F4', // bright blue: buttons, links, active tab
-  brand: '#011542', // deep navy: logo tile
-  brandLight: '#0B2A7A',
+  accent: '#FFFFFF', // white: buttons, links, active tab
+  onAccent: '#2E589E', // blue text sitting on a white button
+  brand: '#2E589E', // the logo blue
+  brandLight: '#3E6BB5',
 
   success: '#22C55E', // "Open" badges, delivered
   warning: '#F59E0B', // "Preparing", low balance
