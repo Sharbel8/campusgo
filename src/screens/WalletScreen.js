@@ -1,12 +1,10 @@
 // Screen 7 — Campus Wallet.
-// The balance is one number in AsyncStorage ('walletBalance').
-// Each top-up, payment and refund is a row in 'transactions'.
-// Nothing here charges a real card. The top-up is simulated.
+// The balance and the transaction list are fields on the signed-in
+// account. Nothing here charges a real card. The top-up is simulated.
 import { useState, useEffect } from 'react';
 import { View, Text, Pressable, FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import campus from '../data/campus.json';
+import { loadWallet, saveWallet } from '../utils/wallet';
 import { colors, spacing, radius, typography } from '../theme/theme';
 
 const TOP_UPS = [5, 10, 20];
@@ -43,17 +41,13 @@ function TransactionRow(props) {
 }
 
 export default function WalletScreen() {
-  const [balance, setBalance] = useState(campus.walletBalance);
+  const [balance, setBalance] = useState(0);
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
-    AsyncStorage.getItem('walletBalance').then((value) => {
-      if (value !== null) {
-        setBalance(Number(value));
-      }
-    });
-    AsyncStorage.getItem('transactions').then((value) => {
-      setTransactions(value ? JSON.parse(value) : []);
+    loadWallet().then((wallet) => {
+      setBalance(wallet.balance);
+      setTransactions(wallet.transactions);
     });
   }, []);
 
@@ -67,8 +61,7 @@ export default function WalletScreen() {
       createdAt: new Date().toISOString(),
     };
     const nextList = [entry].concat(transactions);
-    await AsyncStorage.setItem('walletBalance', String(next));
-    await AsyncStorage.setItem('transactions', JSON.stringify(nextList));
+    await saveWallet(next, nextList);
     setBalance(next);
     setTransactions(nextList);
   }

@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import campus from '../data/campus.json';
 import { useCart } from '../context/CartContext';
 import AppButton from '../components/AppButton';
+import ProductImage from '../components/ProductImage';
 import { colors, spacing, radius, typography } from '../theme/theme';
 
 const RULES = campus.delivery;
@@ -52,6 +53,7 @@ function CartLine(props) {
   return (
     <View style={styles.card}>
       <View style={styles.cardTop}>
+        <ProductImage productId={item.productId} category={item.category} />
         <View style={styles.cardBody}>
           <Text style={styles.name}>{item.name}</Text>
           {details !== '' && <Text style={styles.details}>{details}</Text>}
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   cardTop: { flexDirection: 'row', alignItems: 'flex-start' },
-  cardBody: { flex: 1, marginRight: spacing.md },
+  cardBody: { flex: 1, marginLeft: spacing.md, marginRight: spacing.md },
   name: { color: colors.text, fontSize: 17, fontWeight: '700' },
   details: { color: colors.textMuted, fontSize: 14, marginTop: 4 },
   each: { color: colors.textFaint, fontSize: 13, marginTop: 4 },

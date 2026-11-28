@@ -12,6 +12,7 @@ import { useCart } from '../context/CartContext';
 import { toMinutes, minutesNow, isStoreOpen } from '../utils/storeHours';
 import AppButton from '../components/AppButton';
 import { colors, spacing, radius, typography } from '../theme/theme';
+import { loadWallet, saveWallet } from '../utils/wallet';
 
 const RULES = campus.delivery;
 
@@ -24,14 +25,6 @@ function deliveryFee(subtotal) {
     return 0;
   }
   return RULES.fee;
-}
-
-// Newest transaction first, under the key the wallet screen reads.
-async function addWalletTransaction(entry) {
-  const raw = await AsyncStorage.getItem('transactions');
-  const list = raw ? JSON.parse(raw) : [];
-  list.unshift(entry);
-  await AsyncStorage.setItem('transactions', JSON.stringify(list));
 }
 
 // Skip it when the same building and room are already saved.
@@ -100,16 +93,14 @@ export default function CheckoutScreen({ navigation }) {
   const [room, setRoom] = useState('');
   const [slotId, setSlotId] = useState('');
   const [payment, setPayment] = useState('cash');
-  const [balance, setBalance] = useState(campus.walletBalance);
+  const [balance, setBalance] = useState(0);
   const [error, setError] = useState('');
   const [placing, setPlacing] = useState(false);
 
-  // The starting balance is in campus.json. A saved top-up replaces it.
+  // This account's balance, so a low balance blocks wallet payment.
   useEffect(() => {
-    AsyncStorage.getItem('walletBalance').then((value) => {
-      if (value !== null) {
-        setBalance(Number(value));
-      }
+    loadWallet().then((wallet) => {
+      setBalance(wallet.balance);
     });
   }, []);
 
@@ -166,16 +157,16 @@ export default function CheckoutScreen({ navigation }) {
     };
 
     if (payment === 'wallet') {
-      const nextBalance = Math.round((balance - total) * 100) / 100;
-      await AsyncStorage.setItem('walletBalance', String(nextBalance));
-      // The wallet screen lists every payment, refund and top-up.
-      await addWalletTransaction({
+      const wallet = await loadWallet();
+      const nextBalance = Math.round((wallet.balance - total) * 100) / 100;
+      const entry = {
         id: 'T-' + order.id,
         type: 'payment',
         label: store.name + ' · ' + order.id,
         amount: -total,
         createdAt: order.createdAt,
-      });
+      };
+      await saveWallet(nextBalance, [entry].concat(wallet.transactions));
     }
 
     // Keep this building and room on the profile for next time.

@@ -75,7 +75,7 @@ function onlyDigits(text) {
 
 // A row of pill buttons where exactly one is selected.
 // It uses a horizontal FlatList, like the category chips on Home.
-function OptionPicker(props) {
+function OptionPicker(props) {  //for color, sides, and binding options
   return (
     <FlatList
       horizontal
@@ -362,7 +362,7 @@ export default function PrintingScreen({ navigation }) {
             <Text style={styles.priceLabel}>Copies</Text>
             <Text style={styles.priceValue}>× {copies}</Text>
           </View>
-          <View style={styles.divider} />
+          <View style={styles.divider}/> 
           <View style={styles.priceRow}>
             <Text style={styles.priceLabel}>Print total</Text>
             <Text style={styles.priceValue}>{money(total)}</Text>

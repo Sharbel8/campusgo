@@ -2,8 +2,8 @@
 import { useState, useEffect } from 'react';
 import { View, Text, TextInput, Pressable, FlatList, Image, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import campus from '../data/campus.json';
+import { loadWallet } from '../utils/wallet';
 import { colors, spacing, radius, typography } from '../theme/theme';
 
 // "07:30" -> 7 * 60 + 30 = 450. Easier to compare than clock text.
@@ -23,7 +23,7 @@ function isStoreOpen(store) {
   return now >= toMinutes(store.opens) && now < toMinutes(store.closes);
 }
 
-// The next break that has not finished yet. null if the day is over.
+// The next break that has not finished yet. null if the day is over (between time now and all the slots)
 function nextSlot(slots) {
   const now = minutesNow();
   for (let i = 0; i < slots.length; i++) {
@@ -100,20 +100,18 @@ function StoreCard(props) {
 export default function HomeScreen({ navigation }) {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
-  const [balance, setBalance] = useState(campus.walletBalance);
+  const [balance, setBalance] = useState(0);
 
   const categories = categoryNames(campus.stores);
   const stores = matchingStores(campus.stores, category, search);
   const slot = nextSlot(campus.slots);
 
-  // The starting balance is in campus.json. Read it again whenever
-  // Home is opened, so a top-up on the wallet screen shows here.
+  // Read this account's wallet again whenever Home is opened,
+  // so a top-up on the wallet screen shows here.
   useEffect(() => {
     function loadBalance() {
-      AsyncStorage.getItem('walletBalance').then((value) => {
-        if (value !== null) {
-          setBalance(Number(value));
-        }
+      loadWallet().then((wallet) => {
+        setBalance(wallet.balance);
       });
     }
     loadBalance();
