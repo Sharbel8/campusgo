@@ -74,8 +74,17 @@ export default function WelcomeScreen({ navigation }) {
       return;
     }
 
+    // Accounts created before the wallet field existed start at 0.
+    if (typeof found.walletBalance !== 'number') {
+      found.walletBalance = 0;
+    }
+    if (!found.transactions) {
+      found.transactions = [];
+    }
+
     // Remember who is logged in, then open the tabs.
     // replace() removes this screen, so Back cannot return to it.
+    await AsyncStorage.setItem('users', JSON.stringify(users));
     await AsyncStorage.setItem('session', JSON.stringify(found));
     navigation.replace('MainTabs');
   };
@@ -134,6 +143,8 @@ export default function WelcomeScreen({ navigation }) {
       phone: digits,
       email: cleanEmail,
       password: password,
+      walletBalance: 0,
+      transactions: [],
     };
 
     users.push(account);

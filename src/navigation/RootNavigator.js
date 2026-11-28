@@ -1,5 +1,5 @@
 // =============================================================
-// RootNavigator — the main STACK of the app.
+// RootNavigator — the main STACK of the app having tabs inside stack
 //
 //   Welcome            (login, no header)
 //   MainTabs           (the 5 bottom tabs, no header)
@@ -67,11 +67,11 @@ export default function RootNavigator() {
 
       {/* the title can use the params sent with navigate() */}
       <Stack.Screen
-        name="StoreMenu"
+        name="StoreMenu" // store with menu of all products
         component={StoreMenuScreen}
         options={({ route }) => ({
           title: route.params.storeName,
-          headerRight: () => <CartButton />, // cart badge (the tab bar is hidden here)
+          headerRight: () => <CartButton />, // cart badge appears on the right of the header (the tab bar is hidden here)
         })}
       />
       <Stack.Screen

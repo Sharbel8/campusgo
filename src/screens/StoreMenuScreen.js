@@ -63,7 +63,7 @@ function ProductRow(props) {
         pressed && styles.pressed,
       ]}
     >
-      <ProductImage category={product.category} />
+      <ProductImage productId={product.id} category={product.category} />
       <View style={styles.cardBody}>
         <Text style={styles.name}>{product.name}</Text>
         <Text style={styles.price}>

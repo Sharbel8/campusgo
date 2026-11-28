@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppButton from '../components/AppButton';
 import { colors, spacing, radius, typography } from '../theme/theme';
+import { loadWallet, saveWallet } from '../utils/wallet';
 
 const STEP_KEYS = ['Received', 'Preparing', 'On the way', 'Delivered'];
 const COURIERS = ['Rami Khoury', 'Nadia Haddad', 'Karim Nassar', 'Maya Saleh'];
@@ -118,20 +119,16 @@ export default function OrderTrackingScreen({ route }) {
     await updateSavedOrder(order.id, { status: 'Cancelled' });
     // Give the wallet payment back. Cash was never taken.
     if (order.payment === 'wallet') {
-      const raw = await AsyncStorage.getItem('walletBalance');
-      const balance = raw !== null ? Number(raw) : 0;
-      const next = Math.round((balance + order.total) * 100) / 100;
-      await AsyncStorage.setItem('walletBalance', String(next));
-      const saved = await AsyncStorage.getItem('transactions');
-      const list = saved ? JSON.parse(saved) : [];
-      list.unshift({
+      const wallet = await loadWallet();
+      const next = Math.round((wallet.balance + order.total) * 100) / 100;
+      const entry = {
         id: 'T-refund-' + order.id,
         type: 'refund',
         label: 'Refund · ' + order.id,
         amount: order.total,
         createdAt: new Date().toISOString(),
-      });
-      await AsyncStorage.setItem('transactions', JSON.stringify(list));
+      };
+      await saveWallet(next, [entry].concat(wallet.transactions));
     }
   }
 

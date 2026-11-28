@@ -1,5 +1,5 @@
 {
-  "walletBalance": 10.5,
+  "walletBalance": 0,
   "printPrices": { "bwPerPage": 0.05, "colorPerPage": 0.25, "staple": 0.1, "spiral": 1.5, "maxPages": 200 },
   "delivery": { "fee": 0.5, "freeAbove": 10, "minimum": 2 },
   "slotsAlwaysAvailable": false,
@@ -9,8 +9,8 @@
       "name": "UA Caff",
       "category": "Food",
       "prepMinutes": 15,
-      "opens": "7:30",
-      "closes": "15:30",
+      "opens": "0:00",
+      "closes": "22:30",
       "icon": "restaurant"
     },
     {
@@ -18,8 +18,8 @@
       "name": "UA Brew",
       "category": "Coffee",
       "prepMinutes": 8,
-      "opens": "07:30",
-      "closes": "18:00",
+      "opens": "0:00",
+      "closes": "7:30",
       "icon": "cafe"
     },
     {

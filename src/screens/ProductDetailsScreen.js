@@ -46,7 +46,7 @@ export default function ProductDetailsScreen({ navigation, route }) {
   // These lines run again on every render, and a render happens
   // every time a useState value changes. So the price is always
   // up to date, without any extra code.
-  let unitPrice = product.price;
+  let unitPrice = product.price;  //unit price is the price of the product being updated live
   for (let i = 0; i < sizes.length; i++) {
     if (sizes[i].name === sizeName) {
       unitPrice += sizes[i].price;
@@ -62,7 +62,7 @@ export default function ProductDetailsScreen({ navigation, route }) {
   // Tap an extra once to add it, tap again to remove it.
   function toggleExtra(name) {
     if (chosenExtras.indexOf(name) !== -1) {
-      setChosenExtras(chosenExtras.filter((extra) => extra !== name));
+      setChosenExtras(chosenExtras.filter((extra) => extra !== name));//filter out if already checked in the list
     } else {
       setChosenExtras([...chosenExtras, name]);
     }
@@ -136,7 +136,7 @@ export default function ProductDetailsScreen({ navigation, route }) {
   const header = (
     <View>
       <View style={styles.hero}>
-        <ProductImage category={product.category} size={120} />
+        <ProductImage productId={product.id} category={product.category} size={120} />
       </View>
       <Text style={typography.eyebrow}>
         {store.name} · {product.category}
@@ -186,10 +186,10 @@ export default function ProductDetailsScreen({ navigation, route }) {
         contentContainerStyle={styles.content}
         ListHeaderComponent={header}
         renderItem={({ item }) => {
-          const on = chosenExtras.indexOf(item.name) !== -1;
+          const on = chosenExtras.indexOf(item.name) !== -1;  //if the extra is in the list, then it is checked
           return (
             <Pressable onPress={() => toggleExtra(item.name)} style={[styles.extra, on && styles.extraOn]}>
-              <Ionicons name={on ? 'checkbox' : 'square-outline'} size={22} color={colors.text} />
+              <Ionicons name={on ? 'checkbox' : 'square-outline'} size={22} color={colors.text} /> //checkbox if checked, square-outline if not checked
               <Text style={styles.extraName}>{item.name}</Text>
               <Text style={styles.extraPrice}>{item.price > 0 ? '+' + money(item.price) : 'Free'}</Text>
             </Pressable>
@@ -200,7 +200,7 @@ export default function ProductDetailsScreen({ navigation, route }) {
       {/* Bottom bar: quantity selector + Add button, always visible */}
       <View style={styles.footer}>
         <View style={styles.qtyRow}>
-          <Pressable
+          <Pressable  //minus button
             onPress={() => changeQuantity(-1)}
             disabled={quantity <= 1}
             style={[styles.qtyButton, quantity <= 1 && styles.qtyDisabled]}
